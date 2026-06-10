@@ -118,6 +118,12 @@ outputs:
         # Can't pin exact because of the python build matrix; match the
         # version + build number + variant via the build-string glob instead.
         - libcamera ==${{ libcamera_version }} *_${{ number_base }}_${{ variant }}
+    tests:
+      # Metapackage: confirm it resolves the pin and co-installs the
+      # matching libcamera build (the run dep lands in the test env).
+      - script:
+          - test -f $PREFIX/lib/libcamera.so
+          - which cam
 
 about:
   homepage: https://libcamera.org/index.html
