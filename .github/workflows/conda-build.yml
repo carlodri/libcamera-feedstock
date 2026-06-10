@@ -67,7 +67,7 @@ jobs:
             tools_install_dir: ~/miniforge3
             build_workspace_dir: build_artifacts
             docker_run_args: 
-          - CONFIG: linux_aarch64_python3.10.____cpythonvariantrpi_fork
+          - CONFIG: linux_aarch64_variantrpi_fork
             STORE_BUILD_ARTIFACTS: False
             UPLOAD_PACKAGES: True
             os: ubuntu
@@ -76,79 +76,7 @@ jobs:
             tools_install_dir: ~/miniforge3
             build_workspace_dir: build_artifacts
             docker_run_args: 
-          - CONFIG: linux_aarch64_python3.10.____cpythonvariantupstream
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.11.____cpythonvariantrpi_fork
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.11.____cpythonvariantupstream
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.12.____cpythonvariantrpi_fork
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.12.____cpythonvariantupstream
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.13.____cp313variantrpi_fork
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.13.____cp313variantupstream
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.14.____cp314variantrpi_fork
-            STORE_BUILD_ARTIFACTS: False
-            UPLOAD_PACKAGES: True
-            os: ubuntu
-            runs_on: ['ubuntu-latest']
-            DOCKER_IMAGE: quay.io/condaforge/linux-anvil-x86_64:alma9
-            tools_install_dir: ~/miniforge3
-            build_workspace_dir: build_artifacts
-            docker_run_args: 
-          - CONFIG: linux_aarch64_python3.14.____cp314variantupstream
+          - CONFIG: linux_aarch64_variantupstream
             STORE_BUILD_ARTIFACTS: False
             UPLOAD_PACKAGES: True
             os: ubuntu

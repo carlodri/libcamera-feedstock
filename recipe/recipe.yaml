@@ -1,0 +1,146 @@
+schema_version: 1
+
+context:
+  libcamera_version: "0.5.2"
+  libcamera_rpi_version: "0.5.2+rpt20250903"
+  # '+' must be percent-encoded for the GitHub release URL
+  rpi_url_safe_version: ${{ libcamera_rpi_version | replace("+", "%2B") }}
+  number_base: 6
+
+recipe:
+  name: libcamera
+  version: ${{ libcamera_version }}
+
+source:
+  - if: variant == "upstream"
+    then:
+      # libcamera does not offer tarballs
+      git: https://git.libcamera.org/libcamera/libcamera.git
+      rev: v${{ libcamera_version }}
+      patches:
+        - memfd_symbols.patch
+        # When cross compiling it is important to specify this to help find libevent
+        - 0001-Specify-to-use-the-prefix-include-directory-to-help-.patch
+        - 0002-conda-installed-paths.patch
+    else:
+      # raspberrypi/libcamera#251: upstream maintain ABI compatibility, so the
+      # RPi-specific changes ship as a variant rather than a separate package.
+      url: https://github.com/raspberrypi/libcamera/releases/download/v${{ rpi_url_safe_version }}/libcamera-${{ rpi_url_safe_version }}.tar.xz
+      sha256: a3e3da6f8926313f0ed5eb86cf1b4ae209f4f640169a2be44a07d6233192150a
+      patches:
+        - memfd_symbols.patch
+        - 0001-Specify-to-use-the-prefix-include-directory-to-help-.patch
+        - 0002-conda-installed-paths.patch
+
+build:
+  number: ${{ number_base + 100 if variant == "upstream" else number_base }}
+  skip:
+    - not linux
+    - variant == "rpi_fork" and not aarch64
+
+outputs:
+  - package:
+      name: libcamera
+    build:
+      string: ${{ hash }}_${{ build_number }}_${{ variant }}
+      script: build.sh
+    requirements:
+      # see https://git.libcamera.org/libcamera/libcamera.git/tree/meson.build?h=v0.5.1#n65
+      run_exports:
+        - ${{ pin_subpackage('libcamera', upper_bound='x.x') }}
+      build:
+        - if: build_platform != target_platform
+          then:
+            - python
+            - cross-python_${{ target_platform }}
+            - qt6-main
+        - cmake
+        - ninja
+        - meson
+        # Needed for some build processes???
+        - ply
+        - pyyaml
+        - jinja2
+        - pkg-config
+        - ${{ compiler('cxx') }}
+        - ${{ compiler('c') }}
+        - ${{ stdlib('c') }}
+      host:
+        - libgl-devel
+        - python
+        - pybind11
+        - jinja2
+        - libudev
+        - libudev1
+        - gstreamer
+        - libglib
+        - glib
+        - gst-plugins-base
+        - libevent
+        - libdrm
+        - libtiff
+        - qt6-main
+        - libjpeg-turbo
+        - yaml
+        - libunwind
+        - sdl2
+        - openssl
+        - libboost-devel
+        - pyyaml
+        - ply
+        - libpisp
+        # libpisp build dependency
+        - nlohmann_json
+      run:
+        - python
+    tests:
+      - script:
+          - cam -l
+          # qcam -h would need a full X environment; just check it exists
+          - which qcam
+          - if: unix
+            then: libcamerify -h
+      - package_contents:
+          files:
+            - lib/libcamera.so
+          include:
+            - libcamera/libcamera/libcamera.h
+
+  - package:
+      name: libcamera-rpi
+    build:
+      number: ${{ number_base }}
+      string: h${{ hash }}_${{ build_number }}_${{ variant }}
+      skip:
+        - variant == "upstream"
+    requirements:
+      run:
+        # Can't pin exact because of the python build matrix; match the
+        # version + build number + variant via the build-string glob instead.
+        - libcamera ==${{ libcamera_version }} *_${{ number_base }}_${{ variant }}
+    tests:
+      # Metapackage: confirm it resolves the pin and co-installs the
+      # matching libcamera build (the run dep lands in the test env).
+      - script:
+          - test -f $PREFIX/lib/libcamera.so
+          - which cam
+
+about:
+  homepage: https://libcamera.org/index.html
+  summary: An open source camera stack and framework for Linux, Android, and ChromeOS
+  license: >
+    LGPL-2.1-or-later
+    AND BSD-2-Clause
+    AND BSD-3-Clause
+    AND MIT
+    AND Apache-2.0
+    AND CC0-1.0
+    AND CC-BY-SA-4.0
+    AND CC-BY-4.0
+  license_file: LICENSES/
+  documentation: https://libcamera.org/introduction.html
+  repository: https://git.libcamera.org/libcamera/libcamera.git/
+
+extra:
+  recipe-maintainers:
+    - carlodri
