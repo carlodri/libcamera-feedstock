@@ -1,0 +1,47 @@
+From: Carlo Dri <carlo.dri@gmail.com>
+Date: Wed, 10 Jun 2026 08:27:41 +0000
+Subject: [PATCH] Treat libcamera as installed under conda RUNPATH
+
+conda-forge injects a DT_RUNPATH into every relocatable library, which
+defeats isLibcameraInstalled()'s heuristic and routes IPA module, IPA
+proxy worker, IPA config and pipeline-config lookups into a non-existent
+build tree ($PREFIX/../src/...). This makes IPAProxy::resolvePath()
+return an empty path and abort with a segfault on camera enumeration.
+
+Report the library as installed so the compiled-in install dirs
+(IPA_MODULE_DIR, IPA_PROXY_DIR, IPA_CONFIG_DIR, LIBCAMERA_DATA_DIR) are
+used. LIBCAMERA_IPA_*_PATH env overrides are checked independently and
+keep working.
+---
+ src/libcamera/source_paths.cpp | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/src/libcamera/source_paths.cpp b/src/libcamera/source_paths.cpp
+index 1af5386..0bf50d4 100644
+--- a/src/libcamera/source_paths.cpp
++++ b/src/libcamera/source_paths.cpp
+@@ -40,14 +40,15 @@ namespace {
+ bool isLibcameraInstalled()
+ {
+ 	/*
+-	 * DT_RUNPATH (DT_RPATH when the linker uses old dtags) is removed on
+-	 * install.
++	 * Upstream uses the presence of DT_RUNPATH/DT_RPATH (stripped by meson
++	 * on install) as the "not installed" signal. conda-forge injects a
++	 * RUNPATH into every relocatable library, so that heuristic always
++	 * misfires and sends IPA module/proxy/config and pipeline-config lookups
++	 * into a non-existent build tree. In a conda environment the library is
++	 * always installed; report it as such so the standard installed search
++	 * paths are used. Developer overrides via LIBCAMERA_IPA_*_PATH are checked
++	 * independently and remain functional.
+ 	 */
+-	for (const ElfW(Dyn) *dyn = _DYNAMIC; dyn->d_tag != DT_NULL; ++dyn) {
+-		if (dyn->d_tag == DT_RUNPATH || dyn->d_tag == DT_RPATH)
+-			return false;
+-	}
+-
+ 	return true;
+ }
+ 
+-- 
+2.43.0
