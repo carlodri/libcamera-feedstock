@@ -117,7 +117,7 @@ outputs:
       run:
         # Can't pin exact because of the python build matrix; match the
         # version + build number + variant via the build-string glob instead.
-        - libcamera ${{ libcamera_version }} *_${{ number_base }}_${{ variant }}
+        - libcamera ==${{ libcamera_version }} *_${{ number_base }}_${{ variant }}
 
 about:
   homepage: https://libcamera.org/index.html
