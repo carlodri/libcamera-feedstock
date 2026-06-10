@@ -1,11 +1,11 @@
 schema_version: 1
 
 context:
-  libcamera_version: "0.5.2"
-  libcamera_rpi_version: "0.5.2+rpt20250903"
+  libcamera_version: "0.7.1"
+  libcamera_rpi_version: "0.7.1+rpt20260609"
   # '+' must be percent-encoded for the GitHub release URL
   rpi_url_safe_version: ${{ libcamera_rpi_version | replace("+", "%2B") }}
-  number_base: 6
+  number_base: 0
 
 recipe:
   name: libcamera
@@ -26,7 +26,7 @@ source:
       # raspberrypi/libcamera#251: upstream maintain ABI compatibility, so the
       # RPi-specific changes ship as a variant rather than a separate package.
       url: https://github.com/raspberrypi/libcamera/releases/download/v${{ rpi_url_safe_version }}/libcamera-${{ rpi_url_safe_version }}.tar.xz
-      sha256: a3e3da6f8926313f0ed5eb86cf1b4ae209f4f640169a2be44a07d6233192150a
+      sha256: "d3078e70e73f9811ffe3c780a75a787544a95c64dbb2c85e916fde87896b3ec6"
       patches:
         - memfd_symbols.patch
         - 0001-Specify-to-use-the-prefix-include-directory-to-help-.patch
