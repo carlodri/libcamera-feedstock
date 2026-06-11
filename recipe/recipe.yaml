@@ -100,6 +100,10 @@ outputs:
           - which qcam
           - if: unix
             then: libcamerify -h
+          # Verify env variables are set and point to existing directories
+          - test -d "$LIBCAMERA_IPA_MODULE_PATH"
+          - test -d "$LIBCAMERA_IPA_PROXY_PATH"
+          - test -d "$LIBCAMERA_IPA_CONFIG_PATH"
       - package_contents:
           files:
             - lib/libcamera.so
